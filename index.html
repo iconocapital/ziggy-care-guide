@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ziggy's Care Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FFFDF5;
+    --black: #1A1A1A;
+    --border: 3px solid var(--black);
+    --border-thick: 4px solid var(--black);
+    --shadow: 5px 5px 0px var(--black);
+    --shadow-sm: 3px 3px 0px var(--black);
+    --orange: #FF6B35;
+    --yellow: #FFD166;
+    --green: #06D6A0;
+    --blue: #118AB2;
+    --pink: #FF85A1;
+    --red: #EF476F;
+    --purple: #9B5DE5;
+    --lime: #C7F464;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Space Mono', monospace;
+    background: var(--bg);
+    color: var(--black);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  /* HERO */
+  .hero {
+    background: var(--yellow);
+    border-bottom: var(--border-thick);
+    padding: 2rem 1.5rem 1.5rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '🐾🐾🐾🐾🐾🐾🐾🐾🐾🐾🐾🐾🐾🐾🐾🐾🐾🐾🐾🐾';
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    font-size: 2rem; opacity: 0.06; word-break: break-all;
+    line-height: 1.2; pointer-events: none;
+  }
+  .hero-photo {
+    width: 140px; height: 140px;
+    border-radius: 50%;
+    border: 4px solid var(--black);
+    box-shadow: var(--shadow);
+    object-fit: cover;
+    margin: 0 auto 0.8rem;
+    display: block;
+    position: relative;
+  }
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: 2.8rem; font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: -0.03em; line-height: 1;
+    position: relative;
+  }
+  .hero .sub {
+    font-size: 0.85rem; margin-top: 0.6rem;
+    position: relative; font-weight: 700;
+    letter-spacing: 0.05em; text-transform: uppercase;
+  }
+
+  /* CONTACTS */
+  .contacts {
+    display: flex; gap: 0.5rem; padding: 1rem;
+    overflow-x: auto; -webkit-overflow-scrolling: touch;
+    background: var(--black);
+  }
+  .contacts::-webkit-scrollbar { display: none; }
+  .contact-item { flex-shrink: 0; position: relative; }
+  .chip {
+    display: flex; align-items: center; gap: 0.4rem;
+    padding: 0.55rem 0.9rem;
+    border: 2px solid var(--bg); border-radius: 0;
+    background: transparent; color: var(--bg);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.04em;
+    white-space: nowrap; cursor: pointer;
+    transition: background 0.1s, color 0.1s;
+    text-decoration: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .chip:active { background: var(--bg); color: var(--black); }
+  .chip.emergency { border-color: var(--red); color: var(--red); }
+  .chip.emergency:active { background: var(--red); color: white; }
+  .chip.vet { border-color: var(--green); color: var(--green); }
+  .chip.vet:active { background: var(--green); color: var(--black); }
+
+  /* CONTACT POPUP */
+  .contact-popup {
+    display: none;
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: var(--black);
+    border-top: 4px solid var(--yellow);
+    z-index: 1000;
+    padding: 1.5rem;
+    animation: popUp 0.2s ease;
+  }
+  .contact-popup.show { display: block; }
+  @keyframes popUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+  .contact-popup .popup-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.2rem; font-weight: 800;
+    color: var(--yellow);
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+  .contact-popup .popup-actions {
+    display: flex; gap: 0.75rem;
+  }
+  .contact-popup .popup-actions a {
+    flex: 1;
+    display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+    padding: 1rem;
+    border: var(--border);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.85rem; font-weight: 700;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: transform 0.1s, box-shadow 0.1s;
+    box-shadow: var(--shadow-sm);
+  }
+  .contact-popup .popup-actions a:active {
+    transform: translate(2px, 2px);
+    box-shadow: 1px 1px 0px var(--black);
+  }
+  .popup-call { background: var(--green); color: var(--black); border-color: var(--green) !important; }
+  .popup-text { background: var(--blue); color: white; border-color: var(--blue) !important; }
+  .popup-close {
+    display: block; width: 100%;
+    margin-top: 0.75rem; padding: 0.7rem;
+    background: transparent; border: 2px solid #555;
+    color: #888;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem; font-weight: 700;
+    text-transform: uppercase; cursor: pointer;
+    text-align: center;
+  }
+  .popup-overlay {
+    display: none;
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.5); z-index: 999;
+  }
+  .popup-overlay.show { display: block; }
+
+  .content { padding: 1rem; }
+
+  /* SECTIONS */
+  .section { margin-bottom: 1rem; }
+  .section-header {
+    display: flex; align-items: center; gap: 0.7rem;
+    padding: 0.9rem 1rem;
+    background: var(--bg); border: var(--border);
+    box-shadow: var(--shadow-sm);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    transition: transform 0.1s, box-shadow 0.1s;
+  }
+  .section-header:active {
+    transform: translate(2px, 2px);
+    box-shadow: 1px 1px 0px var(--black);
+  }
+  .section-header .tag {
+    font-size: 0.65rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    padding: 0.2rem 0.5rem;
+    border: 2px solid var(--black); flex-shrink: 0;
+  }
+  .section-header h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.05rem; font-weight: 800;
+    text-transform: uppercase; letter-spacing: -0.01em; flex: 1;
+  }
+  .section-header .arrow {
+    font-size: 1.1rem; font-weight: 700;
+    transition: transform 0.25s; flex-shrink: 0;
+  }
+  .section-header.open .arrow { transform: rotate(90deg); }
+  .section-body {
+    max-height: 0; overflow: hidden;
+    transition: max-height 0.4s ease;
+    border: var(--border); border-top: none; background: white;
+  }
+  .section-body.open { max-height: 5000px; }
+  .section-inner { padding: 1rem; }
+
+  [data-color="orange"] .tag { background: var(--orange); color: white; border-color: var(--orange); }
+  [data-color="blue"] .tag { background: var(--blue); color: white; border-color: var(--blue); }
+  [data-color="yellow"] .tag { background: var(--yellow); }
+  [data-color="green"] .tag { background: var(--green); }
+  [data-color="pink"] .tag { background: var(--pink); }
+  [data-color="red"] .tag { background: var(--red); color: white; border-color: var(--red); }
+  [data-color="purple"] .tag { background: var(--purple); color: white; border-color: var(--purple); }
+  [data-color="lime"] .tag { background: var(--lime); }
+
+  /* CARDS */
+  .brutcard {
+    border: var(--border); padding: 1rem;
+    margin-bottom: 0.75rem; background: var(--bg);
+  }
+  .brutcard:last-child { margin-bottom: 0; }
+  .brutcard h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.95rem; font-weight: 800;
+    text-transform: uppercase; margin-bottom: 0.4rem;
+  }
+  .brutcard p, .brutcard li { font-size: 0.82rem; line-height: 1.55; }
+  .brutcard ul { list-style: none; padding: 0; }
+  .brutcard ul li {
+    padding: 0.3rem 0; padding-left: 1.6rem;
+    position: relative; border-bottom: 1px dashed #ddd;
+  }
+  .brutcard ul li:last-child { border-bottom: none; }
+  .brutcard ul li::before {
+    content: '→'; position: absolute; left: 0;
+    font-weight: 700; color: var(--orange);
+  }
+
+  /* ALERTS */
+  .alert-box {
+    border: var(--border); padding: 0.9rem 1rem;
+    margin-bottom: 0.75rem;
+    display: flex; gap: 0.7rem; align-items: flex-start;
+  }
+  .alert-box.warn { background: var(--yellow); }
+  .alert-box.danger { background: var(--red); color: white; }
+  .alert-box.tip { background: var(--lime); }
+  .alert-box .icon { font-size: 1.3rem; flex-shrink: 0; margin-top: 0.05rem; }
+  .alert-box p { font-size: 0.82rem; font-weight: 700; }
+  .alert-box strong { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 2px; }
+
+  /* TIMELINE */
+  .tl-item { display: flex; gap: 0.8rem; margin-bottom: 0.75rem; }
+  .tl-item:last-child { margin-bottom: 0; }
+  .tl-time { width: 52px; flex-shrink: 0; text-align: center; }
+  .tl-time .emoji-badge {
+    width: 42px; height: 42px; border: var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem; background: var(--yellow); margin: 0 auto;
+  }
+  .tl-time .time-txt {
+    font-size: 0.6rem; font-weight: 700;
+    text-transform: uppercase; margin-top: 0.25rem;
+  }
+  .tl-body {
+    flex: 1; border: var(--border);
+    padding: 0.8rem 0.9rem; background: var(--bg);
+  }
+  .tl-body h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.88rem; font-weight: 800;
+    text-transform: uppercase; margin-bottom: 0.2rem;
+  }
+  .tl-body p { font-size: 0.8rem; line-height: 1.5; }
+
+  /* PILLS */
+  .pill {
+    display: inline-block;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.8rem; font-weight: 700;
+    padding: 0.3rem 0.7rem;
+    border: 2px solid var(--black); background: var(--lime);
+    margin: 0.3rem 0.2rem 0.3rem 0; cursor: pointer;
+    transition: transform 0.1s, box-shadow 0.1s;
+    box-shadow: 2px 2px 0px var(--black);
+  }
+  .pill:active { transform: translate(2px, 2px); box-shadow: 0 0 0; }
+
+  /* BUTTONS */
+  .call-btn {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    padding: 0.6rem 1.1rem; border: var(--border);
+    background: var(--green); color: var(--black);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.8rem; font-weight: 700;
+    text-decoration: none; text-transform: uppercase;
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.1s, box-shadow 0.1s;
+    margin-top: 0.5rem;
+  }
+  .call-btn:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0px var(--black); }
+  .call-btn.emergency-btn { background: var(--red); color: white; }
+  .link-btn {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    padding: 0.6rem 1.1rem; border: var(--border);
+    background: var(--blue); color: white;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.78rem; font-weight: 700;
+    text-decoration: none; text-transform: uppercase;
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.1s, box-shadow 0.1s;
+    margin-top: 0.5rem;
+  }
+  .link-btn:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0px var(--black); }
+
+  /* KEY COLORS */
+  .key-row {
+    display: flex; align-items: center; gap: 0.6rem;
+    padding: 0.5rem 0; border-bottom: 1px dashed #ccc;
+    font-size: 0.85rem; font-weight: 700;
+  }
+  .key-row:last-child { border-bottom: none; }
+  .key-dot {
+    width: 22px; height: 22px; border-radius: 50%;
+    border: 2px solid var(--black); flex-shrink: 0;
+  }
+
+  .footer {
+    text-align: center; padding: 2rem 1rem;
+    font-size: 0.7rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    border-top: var(--border-thick);
+    background: var(--black); color: var(--bg);
+  }
+
+  .toast {
+    position: fixed; bottom: 1.5rem; left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--black); color: var(--lime);
+    padding: 0.6rem 1.5rem; border: 2px solid var(--lime);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.8rem; font-weight: 700; text-transform: uppercase;
+    z-index: 998; transition: transform 0.25s ease; pointer-events: none;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  .section { animation: slideIn 0.3s ease both; }
+  .section:nth-child(1) { animation-delay: 0.03s; }
+  .section:nth-child(2) { animation-delay: 0.06s; }
+  .section:nth-child(3) { animation-delay: 0.09s; }
+  .section:nth-child(4) { animation-delay: 0.12s; }
+  .section:nth-child(5) { animation-delay: 0.15s; }
+  .section:nth-child(6) { animation-delay: 0.18s; }
+  .section:nth-child(7) { animation-delay: 0.21s; }
+  .section:nth-child(8) { animation-delay: 0.24s; }
+  .section:nth-child(9) { animation-delay: 0.27s; }
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateX(-10px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <img class="hero-photo" src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAEsASwDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD5UooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAoorpfAPg3VvHHiGHSdEh3Sv80krcJCn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" alt="Ziggy">
+  <h1>Ziggy's<br>Care Guide</h1>
+  <p class="sub">Everything Maria needs to know</p>
+</div>
+
+<!-- CONTACTS -->
+<div class="contacts">
+  <div class="contact-item">
+    <div class="chip" onclick="showContact('Chris', '5858137197')">📱 Chris</div>
+  </div>
+  <div class="contact-item">
+    <div class="chip" onclick="showContact('Abby', '5858133308')">📱 Abby</div>
+  </div>
+  <div class="contact-item">
+    <div class="chip emergency" onclick="showContact('Meg (Emergency)', '5857462559')">🆘 Meg</div>
+  </div>
+  <div class="contact-item">
+    <div class="chip emergency" onclick="showContact('Meghan (Emergency)', '7173648428')">🆘 Meghan</div>
+  </div>
+  <div class="contact-item">
+    <a href="tel:7188323899" class="chip vet">🏥 Vet</a>
+  </div>
+  <div class="contact-item">
+    <a href="tel:7185229400" class="chip vet">🚨 ER Vet</a>
+  </div>
+</div>
+
+<!-- CONTACT POPUP -->
+<div class="popup-overlay" id="popupOverlay" onclick="hideContact()"></div>
+<div class="contact-popup" id="contactPopup">
+  <div class="popup-name" id="popupName"></div>
+  <div class="popup-actions">
+    <a id="popupCall" class="popup-call" href="#">📞 Call</a>
+    <a id="popupText" class="popup-text" href="#">💬 Text</a>
+  </div>
+  <button class="popup-close" onclick="hideContact()">Cancel</button>
+</div>
+
+<div class="content">
+
+  <!-- ═══ CATEGORY: APARTMENT ═══ -->
+  <div style="margin: 1.5rem 0 0.75rem; padding: 0.6rem 1rem; background: var(--black); border: var(--border-thick); font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; color: var(--yellow); box-shadow: var(--shadow);">🏠 Apartment & Neighborhood</div>
+
+  <!-- KEYS -->
+  <div class="section" data-color="orange">
+    <div class="section-header open" onclick="toggle(this)">
+      <span class="tag">🔑</span>
+      <h2>Keys & Entry</h2>
+      <span class="arrow">→</span>
+    </div>
+    <div class="section-body open"><div class="section-inner">
+      <div class="brutcard">
+        <h3>Lockbox</h3>
+        <p>Keys are in the lockbox hooked on the metal door outside the main red apartment door.</p>
+        <div style="margin-top:0.5rem">
+          <span class="pill" onclick="copyText('6969')">CODE: 6969 📋</span>
+        </div>
+        <p style="margin-top:0.5rem; font-size:0.78rem;">2 sets inside — leave the spare locked in when you go!</p>
+      </div>
+      <div class="brutcard">
+        <h3>Key Colors</h3>
+        <div class="key-row"><span class="key-dot" style="background:#E53935"></span> Red → First door</div>
+        <div class="key-row"><span class="key-dot" style="background:#FDD835"></span> Yellow → Second door</div>
+        <div class="key-row"><span class="key-dot" style="background:#43A047"></span> Green → Our apartment (2nd floor)</div>
+        <p style="margin-top:0.6rem; font-size:0.78rem; font-weight:700;">⚡ Don't forget to lock them back in the lockbox when you leave!</p>
+      </div>
+    </div></div>
+  </div>
+
+  <!-- APARTMENT -->
+  <div class="section" data-color="blue">
+    <div class="section-header" onclick="toggle(this)">
+      <span class="tag">🏠</span>
+      <h2>Apartment</h2>
+      <span class="arrow">→</span>
+    </div>
+    <div class="section-body"><div class="section-inner">
+      <div class="brutcard">
+        <h3>WiFi</h3>
+        <span class="pill" onclick="copyText('Whitecaps')" style="background:var(--blue);color:white;border-color:var(--blue)">📶 Whitecaps 📋</span>
+        <span class="pill" onclick="copyText('Gabaggool123')">🔒 Gabaggool123 📋</span>
+      </div>
+      <div class="brutcard">
+        <h3>💡 Smart Lights (Hue)</h3>
+        <p>We use Philips Hue for all our lights. Accept the invite below to get access:</p>
+        <a href="https://account.meethue.com/homes/5791738562412544/invites/oaWNONkyAaTFyzfQO2nwFKOvH5JbWpmknAbIvWkxfgI" target="_blank" class="link-btn">💡 Accept Hue Invite</a>
+        <div class="alert-box tip" style="margin-top:0.75rem">
+          <span class="icon">💬</span>
+          <p><strong>Siri Tip:</strong> If you're having trouble with the app, you can use Siri! Say things like <em>"Hey Siri, turn off bedroom lights"</em> or <em>"Hey Siri, turn on living room lights."</em></p>
+        </div>
+      </div>
+      <div class="brutcard">
+        <h3>🖥️ Desk / Workspace</h3>
+        <p>Feel free to use Chris's desk in the office (connected to the living room) if you need a workspace! Just plug the <strong>black USB-C cord</strong> into your laptop and it'll hook right up to the monitor.</p>
+      </div>
+      <div class="brutcard">
+        <h3>Comfort</h3>
+        <ul>
+          <li>Bedroom gets cold → small black space heater on the floor</li>
+          <li>Super dry → tall humidifier to the right of the bed, fill with water</li>
+          <li>Sheets are clean! Towels in white cabinet next to bathroom</li>
+          <li>Feel free to use all appliances, kitchen stuff, bathroom — whatever you need</li>
+        </ul>
+      </div>
+      <div class="brutcard">
+        <h3>📺 Living Room TV</h3>
+        <p>The <strong>white Samsung remote</strong> turns the TV on and off. The little <strong>Apple TV remote</strong> controls everything else you need.</p>
+      </div>
+      <div class="brutcard">
+        <h3>🌡️ Living Room Heat</h3>
+        <p>The living room can get really hot sometimes from the radiator. We usually turn the <strong>AC on fan-only mode</strong> or crack a window.</p>
+      </div>
+      <div class="brutcard">
+        <h3>Around the House</h3>
+        <ul>
+          <li><strong>Garbage:</strong> Bins outside. Extra blue bags behind kitchen garbage</li>
+          <li><strong>Coffee:</strong> Beans on the shelf above the coffee machine</li>
+          <li><strong>Dishwasher:</strong> Pods under the kitchen sink</li>
+          <li><strong>Laundry:</strong> Don't leave wet stuff sitting — gets stinky 😅 Detergent & dryer sheets in white cabinet left of bathroom</li>
+          <li><strong>Packages/Mail:</strong> If boxes start piling up at our door, just toss them in the spare room (across from bathroom)</li>
+        </ul>
+      </div>
+    </div></div>
+  </div>
+
+  <!-- NEIGHBORHOOD -->
+  <div class="section" data-color="yellow">
+    <div class="section-header" onclick="toggle(this)">
+      <span class="tag">📍</span>
+      <h2>Neighborhood Recs</h2>
+      <span class="arrow">→</span>
+    </div>
+    <div class="section-body"><div class="section-inner">
+      <div class="brutcard">
+        <h3>Our Favorites Nearby</h3>
+        <ul>
+          <li><strong>Bodega:</strong> Mr. Lime or Bad Wife</li>
+          <li><strong>Grocery:</strong> K Slope or Union Market</li>
+          <li><strong>Coffee:</strong> Cusp</li>
+          <li><strong>Pizza:</strong> Casa Panuozzo or Norms</li>
+          <li><strong>Thai:</strong> One More Charm</li>
+          <li><strong>Other:</strong> Winner Bakery</li>
+        </ul>
+      </div>
+    </div></div>
+  </div>
+
+  <!-- ═══ CATEGORY: ZIGGY ═══ -->
+  <div style="margin: 1.5rem 0 0.75rem; padding: 0.6rem 1rem; background: var(--black); border: var(--border-thick); font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; color: var(--orange); box-shadow: var(--shadow);">🐶 Ziggy Care</div>
+
+  <!-- DAILY SCHEDULE -->
+  <div class="section" data-color="yellow">
+    <div class="section-header open" onclick="toggle(this)">
+      <span class="tag">📋</span>
+      <h2>Daily Schedule</h2>
+      <span class="arrow">→</span>
+    </div>
+    <div class="section-body open"><div class="section-inner">
+      <div class="tl-item">
+        <div class="tl-time">
+          <div class="emoji-badge">🌅</div>
+          <div class="time-txt">&lt;9:30a</div>
+        </div>
+        <div class="tl-body">
+          <h3>Morning Walk</h3>
+          <p>Around the block if not too cold. Heads up: he can be leash aggressive depending on the other dog.</p>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-time">
+          <div class="emoji-badge" style="background:var(--green)">🥣</div>
+          <div class="time-txt">After</div>
+        </div>
+        <div class="tl-body">
+          <h3>Breakfast</h3>
+          <p><strong>3 scoops</strong> dry food. Leave out for him. If he doesn't eat, treat it as dinner.</p>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-time">
+          <div class="emoji-badge" style="background:var(--blue);color:white">🚶</div>
+          <div class="time-txt">3-5pm</div>
+        </div>
+        <div class="tl-body">
+          <h3>Afternoon Walk</h3>
+          <p>He'll need to go as soon as you're back from work. Around the block. Wipe paws with green paw wipes & towel after.</p>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-time">
+          <div class="emoji-badge" style="background:var(--orange);color:white">🍖</div>
+          <div class="time-txt">~6pm</div>
+        </div>
+        <div class="tl-body">
+          <h3>Dinner</h3>
+          <p><strong>3 scoops</strong> dry food + <strong>1 probiotic</strong>. If he won't eat, try fish treats or a tiny bit of canned tuna from the fridge. Dump uneaten food back in bag before bed.</p>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-time">
+          <div class="emoji-badge" style="background:var(--pink)">🧸</div>
+          <div class="time-txt">6-bed</div>
+        </div>
+        <div class="tl-body">
+          <h3>Play Time</h3>
+          <p>He may cry for attention! Sit on the floor, squeak toys, toss them a few feet. <strong>No tug of war. No throwing into kitchen</strong> (slippery). Be mindful of his IVDD.</p>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-time">
+          <div class="emoji-badge" style="background:var(--purple);color:white">🌙</div>
+          <div class="time-txt">9-10p</div>
+        </div>
+        <div class="tl-body">
+          <h3>Last Pee</h3>
+          <p>Quick trip to the grates out front. If he tries to pull for a walk after peeing, pick him up and bring him back in.</p>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-time">
+          <div class="emoji-badge" style="background:#E0E0E0">👃</div>
+          <div class="time-txt">B4 bed</div>
+        </div>
+        <div class="tl-body">
+          <h3>Nose Butter</h3>
+          <p>Blue tub — apply to his dry nose. Apartment is SO dry this winter!</p>
+        </div>
+      </div>
+    </div></div>
+  </div>
+
+  <!-- FOOD -->
+  <div class="section" data-color="green">
+    <div class="section-header" onclick="toggle(this)">
+      <span class="tag">🍽️</span>
+      <h2>Food & Not Eating</h2>
+      <span class="arrow">→</span>
+    </div>
+    <div class="section-body"><div class="section-inner">
+      <div class="alert-box warn">
+        <span class="icon">💡</span>
+        <p>If it's been a <strong>full day with no eating</strong>, try fish treats or add a tiny bit of canned tuna from the fridge. You may need to do this the first few days. Message us if you're worried!</p>
+      </div>
+      <div class="brutcard">
+        <ul>
+          <li>3 scoops per meal, 2x daily</li>
+          <li>Add 1 probiotic to dinner</li>
+          <li>Wash bowls with soap every other day</li>
+          <li>Dump uneaten food back in bag before bed</li>
+        </ul>
+      </div>
+    </div></div>
+  </div>
+
+  <!-- WALKS -->
+  <div class="section" data-color="lime">
+    <div class="section-header" onclick="toggle(this)">
+      <span class="tag">🦮</span>
+      <h2>Walk Guide</h2>
+      <span class="arrow">→</span>
+    </div>
+    <div class="section-body"><div class="section-inner">
+      <div class="alert-box danger">
+        <span class="icon">⚠️</span>
+        <p><strong>Always carry him up & down the apartment stairs!</strong> Critical for his IVDD recovery.</p>
+      </div>
+      <div class="brutcard">
+        <h3>❄️ Cold Weather (&lt;15°F)</h3>
+        <ul>
+          <li>Fleece on under his coat (video sent for coat & prong collar)</li>
+          <li>Keep walks very short — out the door, right towards 8th, back after he does his business</li>
+          <li>Full block may be too cold on extra cold or rainy days</li>
+          <li>He hates the rain ☔</li>
+        </ul>
+      </div>
+      <div class="brutcard">
+        <h3>🌤️ Warmer Weather</h3>
+        <ul>
+          <li>Around the block (to 10th, up 10th, back) if you have time</li>
+          <li>Or walk up to Prospect Park W and back</li>
+          <li>Avoid the park itself — he can be snappy with other dogs</li>
+        </ul>
+      </div>
+      <div class="brutcard">
+        <h3>Walk Tips</h3>
+        <ul>
+          <li>Pulls hard at dogs, cats, squirrels — keep a good hold!</li>
+          <li>He's stubborn — give a tug or jog to redirect him</li>
+          <li>Wipe paws with green paw wipes after evening walks</li>
+        </ul>
+      </div>
+    </div></div>
+  </div>
+
+  <!-- QUIRKS -->
+  <div class="section" data-color="pink">
+    <div class="section-header" onclick="toggle(this)">
+      <span class="tag">🧦</span>
+      <h2>Quirks & Warnings</h2>
+      <span class="arrow">→</span>
+    </div>
+    <div class="section-body"><div class="section-inner">
+      <div class="alert-box warn">
+        <span class="icon">🧦</span>
+        <p><strong>SOCK MONSTER!</strong> Don't leave socks out or bags open. Keep bedroom door shut if your stuff is in there. He WILL find and destroy socks. It's his superpower 😂</p>
+      </div>
+      <div class="brutcard">
+        <ul>
+          <li>Barks when the doorbell camera goes off — don't be startled! You can talk to visitors through it but can't buzz them in with the keypad</li>
+          <li>No tug-of-war games (IVDD)</li>
+          <li>Don't throw toys into the kitchen (slippery)</li>
+          <li>Also answers to <strong>"Frank"</strong> or <strong>"Franklin"</strong></li>
+        </ul>
+      </div>
+    </div></div>
+  </div>
+
+  <!-- NIGHT -->
+  <div class="section" data-color="purple">
+    <div class="section-header" onclick="toggle(this)">
+      <span class="tag">😴</span>
+      <h2>Overnight & Home Alone</h2>
+      <span class="arrow">→</span>
+    </div>
+    <div class="section-body"><div class="section-inner">
+      <div class="brutcard">
+        <h3>Sleeping</h3>
+        <p>He sometimes sleeps in bed but has been doing a lot of up and down lately. <strong>Best option:</strong> shut the bedroom door — he'll just sleep on the couch. No trouble at all! Put toys in his bin and leave his bed in the living room. You can also leave the office door open; he has a pink bed in there too.</p>
+      </div>
+      <div class="brutcard">
+        <h3>Home Alone</h3>
+        <p>He hangs in the living room. Make sure he has water and he's good to go 👍</p>
+      </div>
+    </div></div>
+  </div>
+
+  <!-- VET -->
+  <div class="section" data-color="red">
+    <div class="section-header" onclick="toggle(this)">
+      <span class="tag">🏥</span>
+      <h2>Vet Info</h2>
+      <span class="arrow">→</span>
+    </div>
+    <div class="section-body"><div class="section-inner">
+      <div class="alert-box danger">
+        <span class="icon">📞</span>
+        <p><strong>Call or text Chris & Abby first</strong> if there's any emergency!</p>
+      </div>
+      <div class="brutcard">
+        <h3>Regular Vet</h3>
+        <p><strong>Animal Kind Vet Office</strong> (around the block)<br>Dr. Laurel Easterling</p>
+        <a href="tel:7188323899" class="call-btn">📞 (718) 832-3899</a>
+      </div>
+      <div class="brutcard">
+        <h3>24-Hour Emergency</h3>
+        <p><strong>VERG Brooklyn</strong></p>
+        <a href="tel:7185229400" class="call-btn emergency-btn">🚨 (718) 522-9400</a>
+      </div>
+    </div></div>
+  </div>
+
+</div>
+
+<div class="footer">
+  Made with ❤️ for Ziggy's sitter · Chris & Abby
+</div>
+
+<div class="toast" id="toast">COPIED!</div>
+
+<script>
+function toggle(header) {
+  header.classList.toggle('open');
+  header.nextElementSibling.classList.toggle('open');
+}
+
+function copyText(text) {
+  navigator.clipboard.writeText(text).then(() => {
+    const t = document.getElementById('toast');
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 1200);
+  });
+}
+
+function showContact(name, number) {
+  document.getElementById('popupName').textContent = name;
+  document.getElementById('popupCall').href = 'tel:' + number;
+  document.getElementById('popupText').href = 'sms:' + number;
+  document.getElementById('contactPopup').classList.add('show');
+  document.getElementById('popupOverlay').classList.add('show');
+}
+
+function hideContact() {
+  document.getElementById('contactPopup').classList.remove('show');
+  document.getElementById('popupOverlay').classList.remove('show');
+}
+</script>
+
+</body>
+</html>
